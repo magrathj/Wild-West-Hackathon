@@ -1,1 +1,1 @@
-databricks workspace import_dir -o notebooks ./'Structured Streaming'/notebooks  --profile hackathon
+databricks workspace import_dir -o notebooks/ /'Structured Streaming'/ --profile hackathon
