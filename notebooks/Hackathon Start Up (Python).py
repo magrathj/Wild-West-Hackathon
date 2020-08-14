@@ -19,7 +19,8 @@
 
 # COMMAND ----------
 
-#checkpointLocation = TMP_DIR + "/<Your Team Name>"
+checkpointLocation = TMP_DIR + "/Structured_Streaming/_chkp"
+checkpointLocation
 
 # COMMAND ----------
 
@@ -60,6 +61,14 @@ schema = StructType([
 # COMMAND ----------
 
 rawDF = spark.read.format("avro")\
+  .option("inferschema", True)\
+  .load(inputDirectory)
+
+display(rawDF)
+
+# COMMAND ----------
+
+rawDF = spark.read.format("avro")\
   .option("inferschema", False)\
   .schema(schema)\
   .load(inputDirectory)
@@ -87,6 +96,15 @@ display(reshapedDF.distinct())
 
 # COMMAND ----------
 
+display(rawDF
+        .withColumn("__$Schema", col("Properties").getItem("__$Schema").getItem("member2"))
+        .withColumn("__$Table", col("Properties").getItem("__$Table").getItem("member1"))
+        .withColumn("__$Table2", col("Properties").getItem("__$Table").getItem("member2"))
+        .withColumn("__$Table3", col("Properties").getItem("__$Table").getItem("member3"))
+       )
+
+# COMMAND ----------
+
 # MAGIC %md ### Hint #2
 
 # COMMAND ----------
@@ -95,11 +113,25 @@ display(rawDF.select(col("Body").cast("string"), col("Properties")))
 
 # COMMAND ----------
 
+display(
+  rawDF
+  .withColumn("Schema", col("Properties").getItem("__$Schema").getItem("member2"))
+  .withColumn("Table", col("Properties").getItem("__$Table").getItem("member2"))
+  .drop(col("Properties"))
+  .select(col("Body").cast("string"), col('Schema'), col('Table'), col("EnqueuedTimeUtc"))
+ # .withColumn("Body", col("Body").getItem("__$Table").getItem("member2"))
+)
+
+# COMMAND ----------
+
 # MAGIC %md You're going to have to take it from here.  You might want to first get a handle on the data before you work on setting up structured streaming, but it is really up to you.  Don't forget to setup your Team's database and Delta tables.
 
 # COMMAND ----------
 
-
+display(
+  rawDF
+  .withColumn("Schema", explode(col("Properties").getItem("__$Table")))
+)
 
 # COMMAND ----------
 

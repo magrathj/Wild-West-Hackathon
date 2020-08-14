@@ -6,7 +6,7 @@
 
 -- COMMAND ----------
 
-CREATE DATABASE IF NOT EXISTS <YOUR TEAM NAME HERE>
+CREATE DATABASE IF NOT EXISTS StructuredStreaming
 
 -- COMMAND ----------
 
@@ -15,7 +15,7 @@ CREATE DATABASE IF NOT EXISTS <YOUR TEAM NAME HERE>
 
 -- COMMAND ----------
 
-CREATE TABLE IF NOT EXISTS <YOUR TEAM NAME HERE>.SalesOrderDetail (
+CREATE OR REPLACE TABLE StructuredStreaming.SalesOrderDetail (
   LineTotal DOUBLE,
   ModifiedDate STRING,
   OrderQty LONG,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS <YOUR TEAM NAME HERE>.SalesOrderDetail (
   UnitPriceDiscount DOUBLE,
   rowguid STRING
 )
-USING DELTA
+USING DELTA 
 
 -- COMMAND ----------
 
@@ -35,7 +35,31 @@ USING DELTA
 
 -- COMMAND ----------
 
-
+CREATE OR REPLACE TABLE StructuredStreaming.SalesOrderHeader (
+  SalesOrderID int,
+  RevisionNumber int,
+  OrderDate timestamp,
+  DueDate timestamp,
+  ShipDate timestamp,
+  Status int,
+  OnlineOrderFlag boolean,
+  SalesOrderNumber string,
+  PurchaseOrderNumber string,
+  AccountNumber string,
+  CustomerID int,
+  ShipToAddressID int,
+  BillToAddressID int,
+  ShipMethod string,
+  CreditCardApprovalCode string,
+  SubTotal decimal(19,4),
+  TaxAmt decimal(19,4),
+  Freight decimal(19,4),
+  TotalDue decimal(19,4),
+  Comment string,
+  rowguid string,
+  ModifiedDate timestamp
+)
+USING DELTA 
 
 -- COMMAND ----------
 
@@ -43,7 +67,24 @@ USING DELTA
 
 -- COMMAND ----------
 
-
+CREATE OR REPLACE TABLE StructuredStreaming.Customer(
+  CustomerID int,
+  NameStyle boolean,
+  Title string,
+  FirstName string,
+  MiddleName string,
+  LastName string,
+  Suffix string,
+  CompanyName string,
+  SalesPerson string,
+  EmailAddress string,
+  Phone string,
+  PasswordHash string,
+  PasswordSalt string,
+  rowguid string,
+  ModifiedDate timestamp
+)
+USING DELTA 
 
 -- COMMAND ----------
 
@@ -51,7 +92,18 @@ USING DELTA
 
 -- COMMAND ----------
 
-
+CREATE OR REPLACE TABLE StructuredStreaming.Address (
+ AddressID LONG, 
+ AddressLine1 STRING,
+ AddressLine2 STRING,
+ City STRING,
+ StateProvince STRING,
+ CountryRegion STRING,
+ PostalCode STRING,
+ rowguid STRING,
+ ModifiedDate TIMESTAMP
+)
+USING DELTA 
 
 -- COMMAND ----------
 
@@ -59,7 +111,14 @@ USING DELTA
 
 -- COMMAND ----------
 
-
+CREATE OR REPLACE TABLE StructuredStreaming.CustomerAddress (
+  CustomerID int,
+  AddressID int,
+  AddressType string,
+  rowguid string,
+  ModifiedDate timestamp
+)
+USING DELTA 
 
 -- COMMAND ----------
 
@@ -67,7 +126,26 @@ USING DELTA
 
 -- COMMAND ----------
 
-
+CREATE OR REPLACE TABLE StructuredStreaming.Product (
+  ProductID int,
+  Name string,
+  ProductNumber string,
+  Color string,
+  StandardCost decimal(19,4),
+  ListPrice decimal(19,4),
+  Size string,
+  Weight decimal(8,2),
+  ProductCategoryID int,
+  ProductModelID int,
+  SellStartDate timestamp,
+  SellEndDate timestamp,
+  DiscontinuedDate timestamp,
+  ThumbNailPhoto binary,
+  ThumbnailPhotoFileName string,
+  rowguid string,
+  ModifiedDate timestamp
+)
+USING DELTA 
 
 -- COMMAND ----------
 
@@ -75,7 +153,13 @@ USING DELTA
 
 -- COMMAND ----------
 
-
+CREATE OR REPLACE TABLE StructuredStreaming.ProductDescription (
+  ProductDescriptionID int,
+  Description string,
+  rowguid string,
+  ModifiedDate timestamp
+)
+USING DELTA 
 
 -- COMMAND ----------
 
@@ -83,7 +167,14 @@ USING DELTA
 
 -- COMMAND ----------
 
-
+CREATE OR REPLACE TABLE StructuredStreaming.ProductCategory (
+  ProductCategoryID int,
+  ParentProductCategoryID int,
+  Name string,
+  rowguid string,
+  ModifiedDate timestamp
+)
+USING DELTA 
 
 -- COMMAND ----------
 
@@ -91,7 +182,14 @@ USING DELTA
 
 -- COMMAND ----------
 
-
+CREATE OR REPLACE TABLE StructuredStreaming.ProductModel (
+  ProductModelID int,
+  Name string,
+  CatalogDescription string,
+  rowguid string,
+  ModifiedDate timestamp
+)
+USING DELTA 
 
 -- COMMAND ----------
 
@@ -99,7 +197,14 @@ USING DELTA
 
 -- COMMAND ----------
 
-
+CREATE OR REPLACE TABLE StructuredStreaming.ProductModelProductDescription (
+  ProductModelID int,
+  ProductDescriptionID int,
+  Culture string,
+  rowguid string,
+  ModifiedDate timestamp
+)
+USING DELTA 
 
 -- COMMAND ----------
 
