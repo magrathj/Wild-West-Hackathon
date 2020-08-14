@@ -15,16 +15,16 @@
 
 def import_parquet_files(tables_info):
   for table_info in tables_info: 
-    print(f" import parquet file at {table_info['parquet_path']} into { table_info['table_name']}")
-    spark.read.format("parquet").option("inferSchema", True).load(table_info['parquet_path']).write.format("delta").option("mergeSchema", False).save(table_info['table_name'])
+    print(f" import parquet file at {table_info['parquet_path']} into { table_info['table_path']}")
+    spark.read.format("parquet").option("inferSchema", True).load(table_info['parquet_path']).write.format("delta").option("mergeSchema", False).mode("append").save(table_info['table_path'])
 
 # COMMAND ----------
 
 # DBTITLE 1,Define the paths and corresponding delta tables
 parquet_files_to_insert = [
   {
-    'table_name' : 'StructuredStreaming.Address',
-    'parquet_path' : ADDRESS
+    'table_path' : ADDRESS_DELTA,
+    'parquet_path' : ADDRESS_PARQUET
   }
 #   ,
 #   {

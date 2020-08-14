@@ -13,7 +13,7 @@ spark.conf.set(f"fs.azure.account.key.{storageAccount}.dfs.core.windows.net", st
 BASE_DIRECTORY = f"abfss://lake@{storageAccount}.dfs.core.windows.net"
 TMP_DIR = f"wasbs://lake@{storageAccount}.blob.core.windows.net/tmp"
 
-TEAM_DIR = TMP_DIR + '/StructuredStreaming'
+TEAM_DIR = TMP_DIR + '/StructuredStreaming/delta'
 
 inputDirectory = BASE_DIRECTORY + "/zone=raw/subjectarea=hackathon/ehn-hackathon-bp/*/*/*/*/*/*"
 
@@ -46,6 +46,20 @@ SALES_ORDER_HEADER_PARQUET = BASE_DIRECTORY + '/salesorderheader.parquet'
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC * ADDRESS_PARQUET 
+# MAGIC * CUSTOMER_PARQUET 
+# MAGIC * CUSTOMER_ADDRESS_PARQUET 
+# MAGIC * PRODUCT_PARQUET 
+# MAGIC * PRODUCT_CATEGORGY_PARQUET 
+# MAGIC * PRODUCT_DESCRIPTION_PARQUET 
+# MAGIC * PRODUCT_MODEL_PARQUET 
+# MAGIC * PRODUCT_MODEL_PRODUCT_DESCRIPTION_PARQUET 
+# MAGIC * SALES_ORDER_DETAIL_PARQUET 
+# MAGIC * SALES_ORDER_HEADER_PARQUET  
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC Delta Paths
 
 # COMMAND ----------
@@ -60,3 +74,20 @@ PRODUCT_MODEL_DELTA = TEAM_DIR + '/productmodel'
 PRODUCT_MODEL_PRODUCT_DESCRIPTION_DELTA = TEAM_DIR + '/productmodelproductdescription'
 SALES_ORDER_DETAIL_DELTA = TEAM_DIR + '/salesorderdetail'
 SALES_ORDER_HEADER_DELTA = TEAM_DIR + '/salesorderheader'
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC * ADDRESS_DELTA
+# MAGIC * CUSTOMER_DELTA 
+# MAGIC * CUSTOMER_ADDRESS_DELTA 
+# MAGIC * PRODUCT_DELTA
+# MAGIC * PRODUCT_CATEGORGY_DELTA 
+# MAGIC * PRODUCT_DESCRIPTION_DELTA
+# MAGIC * PRODUCT_MODEL_DELTA 
+# MAGIC * PRODUCT_MODEL_PRODUCT_DESCRIPTION_DELTA 
+# MAGIC * SALES_ORDER_DETAIL_DELTA 
+# MAGIC * SALES_ORDER_HEADER_DELTA
+
+# COMMAND ----------
+
