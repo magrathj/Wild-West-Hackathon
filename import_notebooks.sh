@@ -1,1 +1,1 @@
-databricks workspace import_dir -o notebooks/ /'Structured Streaming'/ --profile hackathon
+MSYS_NO_PATHCONV=1 databricks workspace import_dir -o notebooks/ /'Structured Streaming'/ --profile hackathon
