@@ -11,7 +11,7 @@
 
 # COMMAND ----------
 
-# MAGIC %run "./Hackathon Common (Python)"
+# MAGIC %run "./../Configuration/App Config"
 
 # COMMAND ----------
 
