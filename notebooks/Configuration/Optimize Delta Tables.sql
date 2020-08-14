@@ -1,39 +1,43 @@
 -- Databricks notebook source
-OPTIMIZE <YOUR TEAM NAME HERE>.salesorderheader
+OPTIMIZE StructuredStreaming.SalesOrderDetail
 
 -- COMMAND ----------
-
-
-
--- COMMAND ----------
+OPTIMIZE StructuredStreaming.SalesOrderHeader
 
 
 
 -- COMMAND ----------
+OPTIMIZE StructuredStreaming.Customer
 
 
 
 -- COMMAND ----------
+OPTIMIZE StructuredStreaming.Address
 
 
 
 -- COMMAND ----------
+OPTIMIZE StructuredStreaming.Product
 
 
 
 -- COMMAND ----------
+OPTIMIZE StructuredStreaming.ProductDescription
 
 
 
 -- COMMAND ----------
+OPTIMIZE StructuredStreaming.ProductCategory
 
 
 
 -- COMMAND ----------
+OPTIMIZE StructuredStreaming.ProductModel
 
 
 
 -- COMMAND ----------
+OPTIMIZE StructuredStreaming.ProductModelProductDescription
 
 
 
