@@ -22,7 +22,7 @@
 
 spark.sql("""
 CREATE OR REPLACE TABLE StructuredStreaming.SalesOrderDetail (
-  LineTotal DOUBLE,
+  LineTotal decimal(38,6),
   ModifiedDate STRING,
   OrderQty LONG,
   ProductID LONG,
@@ -32,7 +32,7 @@ CREATE OR REPLACE TABLE StructuredStreaming.SalesOrderDetail (
   UnitPriceDiscount DOUBLE,
   rowguid STRING
 )
-USING DELTA LOCATION '{location}' 
+USING DELTA LOCATION '{location}'  
 """.format(location=SALES_ORDER_DETAIL_DELTA))
 
 # COMMAND ----------
@@ -105,7 +105,7 @@ USING DELTA LOCATION '{location}'
 
 spark.sql("""
 CREATE OR REPLACE TABLE StructuredStreaming.Address (
- AddressID LONG, 
+ AddressID INT, 
  AddressLine1 STRING,
  AddressLine2 STRING,
  City STRING,

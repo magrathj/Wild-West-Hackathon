@@ -17,6 +17,8 @@ TEAM_DIR = TMP_DIR + '/StructuredStreaming/delta'
 
 inputDirectory = BASE_DIRECTORY + "/zone=raw/subjectarea=hackathon/ehn-hackathon-bp/*/*/*/*/*/*"
 
+DB_PATH = "dbfs:/user/hive/warehouse/structuredstreaming.db/"
+
 # COMMAND ----------
 
 TMP_DIR
@@ -64,16 +66,16 @@ SALES_ORDER_HEADER_PARQUET = BASE_DIRECTORY + '/salesorderheader.parquet'
 
 # COMMAND ----------
 
-ADDRESS_DELTA = TEAM_DIR + '/address'
-CUSTOMER_DELTA = TEAM_DIR + '/customer'
-CUSTOMER_ADDRESS_DELTA = TEAM_DIR + '/customeraddress'
-PRODUCT_DELTA = TEAM_DIR + '/product'
-PRODUCT_CATEGORGY_DELTA = TEAM_DIR + '/productcategory'
-PRODUCT_DESCRIPTION_DELTA = TEAM_DIR + '/productdescription'
-PRODUCT_MODEL_DELTA = TEAM_DIR + '/productmodel'
-PRODUCT_MODEL_PRODUCT_DESCRIPTION_DELTA = TEAM_DIR + '/productmodelproductdescription'
-SALES_ORDER_DETAIL_DELTA = TEAM_DIR + '/salesorderdetail'
-SALES_ORDER_HEADER_DELTA = TEAM_DIR + '/salesorderheader'
+ADDRESS_DELTA = DB_PATH + '/address'
+CUSTOMER_DELTA = DB_PATH + '/customer'
+CUSTOMER_ADDRESS_DELTA = DB_PATH + '/customeraddress'
+PRODUCT_DELTA = DB_PATH + '/product'
+PRODUCT_CATEGORGY_DELTA = DB_PATH + '/productcategory'
+PRODUCT_DESCRIPTION_DELTA = DB_PATH + '/productdescription'
+PRODUCT_MODEL_DELTA = DB_PATH + '/productmodel'
+PRODUCT_MODEL_PRODUCT_DESCRIPTION_DELTA = DB_PATH + '/productmodelproductdescription'
+SALES_ORDER_DETAIL_DELTA = DB_PATH + '/salesorderdetail'
+SALES_ORDER_HEADER_DELTA = DB_PATH + '/salesorderheader'
 
 # COMMAND ----------
 
