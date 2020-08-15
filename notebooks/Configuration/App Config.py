@@ -29,6 +29,11 @@ inputDirectory
 
 # COMMAND ----------
 
+checkpointLocation = TMP_DIR + "/Structured_Streaming/_chkp"
+checkpointLocation
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC Parquet Paths
 

@@ -23,7 +23,7 @@
 spark.sql("""
 CREATE OR REPLACE TABLE StructuredStreaming.SalesOrderDetail (
   LineTotal decimal(38,6),
-  ModifiedDate STRING,
+  ModifiedDate timestamp,
   OrderQty LONG,
   ProductID LONG,
   SalesOrderDetailID LONG,
