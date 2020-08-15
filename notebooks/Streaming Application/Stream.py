@@ -24,9 +24,16 @@ stream_df = (spark.readStream.format("avro")
 
 # COMMAND ----------
 
-(
-  stream_df
-  .outputMode("append")
-  .option("checkpointLocation", checkpointLocation)
-  .format("memory")
-)
+query = stream_df \
+    .writeStream \
+    .outputMode("append") \
+    .queryName("structuredstreaming") \
+    .format("memory") \
+    .start()
+
+query.awaitTermination()
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select * from structuredstreaming

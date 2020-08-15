@@ -22,43 +22,53 @@ def import_parquet_files(tables_info):
 
 # DBTITLE 1,Define the paths and corresponding delta tables
 parquet_files_to_insert = [
-#   {
-#     'table_path' : ADDRESS_DELTA,
-#     'parquet_path' : ADDRESS_PARQUET
-#   },
-#   {
-#     'table_path' : CUSTOMER_DELTA,
-#     'parquet_path' : CUSTOMER_PARQUET
-#   },
-#   {
-#     'table_path' : CUSTOMER_ADDRESS_DELTA,
-#     'parquet_path' : CUSTOMER_ADDRESS_PARQUET
-#   },
-#   {
-#     'table_path' : PRODUCT_DELTA,
-#     'parquet_path' : PRODUCT_PARQUET
-#   },
-#   {
-#     'table_path' : PRODUCT_CATEGORGY_DELTA,
-#     'parquet_path' : PRODUCT_CATEGORGY_PARQUET
-#   },
-#   {
-#     'table_path' : PRODUCT_DESCRIPTION_DELTA,
-#     'parquet_path' : PRODUCT_DESCRIPTION_PARQUET
-#   },
-#   {
-#     'table_path' : PRODUCT_MODEL_DELTA,
-#     'parquet_path' : PRODUCT_MODEL_PARQUET
-#   },
-#   {
-#     'table_path' : PRODUCT_MODEL_PRODUCT_DESCRIPTION_DELTA,
-#     'parquet_path' : PRODUCT_MODEL_PRODUCT_DESCRIPTION_PARQUET
-#   },
   {
+    'table_name' : 'address',
+    'table_path' : ADDRESS_DELTA,
+    'parquet_path' : ADDRESS_PARQUET
+  },
+  {
+    'table_name' : 'customer',
+    'table_path' : CUSTOMER_DELTA,
+    'parquet_path' : CUSTOMER_PARQUET
+  },
+  {
+    'table_name' : 'customeraddress',
+    'table_path' : CUSTOMER_ADDRESS_DELTA,
+    'parquet_path' : CUSTOMER_ADDRESS_PARQUET
+  },
+  {
+    'table_name' : 'product',
+    'table_path' : PRODUCT_DELTA,
+    'parquet_path' : PRODUCT_PARQUET
+  },
+  {
+    'table_name' : 'productcategory',
+    'table_path' : PRODUCT_CATEGORGY_DELTA,
+    'parquet_path' : PRODUCT_CATEGORGY_PARQUET
+  },
+  {
+    'table_name' : 'productdescription',
+    'table_path' : PRODUCT_DESCRIPTION_DELTA,
+    'parquet_path' : PRODUCT_DESCRIPTION_PARQUET
+  },
+  {
+    'table_name' : 'productmodel',
+    'table_path' : PRODUCT_MODEL_DELTA,
+    'parquet_path' : PRODUCT_MODEL_PARQUET
+  },
+  {
+    'table_name' : 'productmodelproductdescription',
+    'table_path' : PRODUCT_MODEL_PRODUCT_DESCRIPTION_DELTA,
+    'parquet_path' : PRODUCT_MODEL_PRODUCT_DESCRIPTION_PARQUET
+  },
+  {
+    'table_name' : 'salesorderdetail',
     'table_path' : SALES_ORDER_DETAIL_DELTA,
     'parquet_path' : SALES_ORDER_DETAIL_PARQUET
   },
   {
+    'table_name' : 'salesorderheader',
     'table_path' : SALES_ORDER_HEADER_DELTA,
     'parquet_path' : SALES_ORDER_HEADER_PARQUET
   }
@@ -67,6 +77,33 @@ parquet_files_to_insert = [
 # COMMAND ----------
 
 import_parquet_files(parquet_files_to_insert) 
+
+# COMMAND ----------
+
+from pyspark.sql.types import *
+from pyspark.sql.functions import *
+
+# COMMAND ----------
+
+schema = StructType([
+  StructField("SalesOrderID",IntegerType(),True),
+  StructField("SalesOrderDetailID",IntegerType(),True),
+  StructField("OrderQty",IntegerType(),True),
+  StructField("ProductID",IntegerType(),True),
+  StructField("UnitPrice",DoubleType(),True),
+  StructField("UnitPriceDiscount",DoubleType(),True),
+  StructField("LineTotal",DoubleType(),True),
+  StructField("rowguid",StringType(),True),
+  StructField("ModifiedDate",TimestampType(),True)
+])
+
+# COMMAND ----------
+
+spark.read.format("parquet").load(SALES_ORDER_DETAIL_PARQUET).show()
+
+# COMMAND ----------
+
+spark.read.format("parquet").load(SALES_ORDER_DETAIL_PARQUET).withColumn('UnitPrice', col('UnitPrice').cast(DoubleType())).show()
 
 # COMMAND ----------
 

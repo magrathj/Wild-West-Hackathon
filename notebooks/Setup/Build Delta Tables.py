@@ -24,13 +24,13 @@ spark.sql("""
 CREATE OR REPLACE TABLE StructuredStreaming.SalesOrderDetail (
   LineTotal decimal(38,6),
   ModifiedDate timestamp,
-  OrderQty LONG,
-  ProductID LONG,
-  SalesOrderDetailID LONG,
-  SalesOrderID LONG,
-  UnitPrice DOUBLE,
-  UnitPriceDiscount DOUBLE,
-  rowguid STRING
+  OrderQty int,
+  ProductID int,
+  SalesOrderDetailID int,
+  SalesOrderID int,
+  UnitPrice decimal(10, 19),
+  UnitPriceDiscount decimal(38,6),
+  rowguid string
 )
 USING DELTA LOCATION '{location}'  
 """.format(location=SALES_ORDER_DETAIL_DELTA))
@@ -96,6 +96,10 @@ CREATE OR REPLACE TABLE StructuredStreaming.Customer(
 )
 USING DELTA LOCATION '{location}' 
 """.format(location=CUSTOMER_DELTA))
+
+# COMMAND ----------
+
+spark.read.format("delta").load(CUSTOMER_DELTA).schema
 
 # COMMAND ----------
 
