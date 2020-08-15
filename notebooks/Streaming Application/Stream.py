@@ -16,24 +16,35 @@ from delta.tables import *
 # COMMAND ----------
 
 # DBTITLE 1,Read in Stream
-stream_df = (spark.readStream.format("avro")
-            .option("inferschema", False)
-            .schema(schema)
-            .load(inputDirectory)
-           )
+# stream_df = (spark.readStream.format("avro")
+#             .option("inferschema", False)
+#             .schema(schema)
+#             .load(inputDirectory)
+#            )
 
 # COMMAND ----------
 
-query = stream_df \
-    .writeStream \
-    .outputMode("append") \
-    .queryName("structuredstreaming") \
-    .format("memory") \
-    .start()
+# query = stream_df \
+#     .writeStream \
+#     .outputMode("append") \
+#     .queryName("structuredstreaming") \
+#     .format("memory") \
+#     .start()
 
-query.awaitTermination()
+# query.awaitTermination()
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC select * from structuredstreaming
+stream_df = spark.readStream.format("avro") \
+              .option("inferschema", False) \
+              .schema(avro_schema) \
+              .option("maxFilesPerTrigger", "1") \
+              .load(inputDirectory)
+
+# COMMAND ----------
+
+stream_df.writeStream \
+  .format("delta") \
+  .foreachBatch(process_incoming_data) \
+  .outputMode("update") \
+  .start() 

@@ -1,5 +1,5 @@
 # Databricks notebook source
-schema = StructType([
+avro_schema = StructType([
   StructField("EnqueuedTimeUtc", StringType(), True),
   StructField("Body", BinaryType(), True),
   StructField("Properties", MapType(StringType(), StructType([
