@@ -36,3 +36,8 @@ View workspace
 
 
 ![Stream](./images/Cleanup.PNG)
+
+
+## Application
+
+![Stream](./images/Streaming_Application.PNG)
