@@ -1,23 +1,29 @@
--- Databricks notebook source
--- MAGIC %md 
--- MAGIC ## Create Your Team's Database
--- MAGIC - No Spaces
--- MAGIC - Recommend Pascal Casing (LikeThisForExample)
+# Databricks notebook source
+# MAGIC %md 
+# MAGIC ## Create Your Team's Database
+# MAGIC - No Spaces
+# MAGIC - Recommend Pascal Casing (LikeThisForExample)
 
--- COMMAND ----------
+# COMMAND ----------
 
-CREATE DATABASE IF NOT EXISTS StructuredStreaming
+# MAGIC %run "./../Configuration/App Config"
 
--- COMMAND ----------
+# COMMAND ----------
 
--- MAGIC %md 
--- MAGIC ## Create SalesOrderDetail Delta Table
+# MAGIC %sql
+# MAGIC CREATE DATABASE IF NOT EXISTS StructuredStreaming
 
--- COMMAND ----------
+# COMMAND ----------
 
+# MAGIC %md 
+# MAGIC ## Create SalesOrderDetail Delta Table
+
+# COMMAND ----------
+
+spark.sql("""
 CREATE OR REPLACE TABLE StructuredStreaming.SalesOrderDetail (
   LineTotal DOUBLE,
-  ModifiedDate STRING,
+  ModifiedDate TIMESTAMP,
   OrderQty LONG,
   ProductID LONG,
   SalesOrderDetailID LONG,
@@ -26,15 +32,17 @@ CREATE OR REPLACE TABLE StructuredStreaming.SalesOrderDetail (
   UnitPriceDiscount DOUBLE,
   rowguid STRING
 )
-USING DELTA 
+USING DELTA LOCATION '{location}'  
+""".format(location=SALES_ORDER_DETAIL_DELTA))
 
--- COMMAND ----------
+# COMMAND ----------
 
--- MAGIC %md 
--- MAGIC ## Create SalesOrderHeader Delta Table
+# MAGIC %md 
+# MAGIC ## Create SalesOrderHeader Delta Table
 
--- COMMAND ----------
+# COMMAND ----------
 
+spark.sql("""
 CREATE OR REPLACE TABLE StructuredStreaming.SalesOrderHeader (
   SalesOrderID int,
   RevisionNumber int,
@@ -59,14 +67,16 @@ CREATE OR REPLACE TABLE StructuredStreaming.SalesOrderHeader (
   rowguid string,
   ModifiedDate timestamp
 )
-USING DELTA 
+USING DELTA LOCATION '{location}' 
+""".format(location=SALES_ORDER_HEADER_DELTA))
 
--- COMMAND ----------
+# COMMAND ----------
 
--- MAGIC %md ## Create Customer Delta Table
+# MAGIC %md ## Create Customer Delta Table
 
--- COMMAND ----------
+# COMMAND ----------
 
+spark.sql("""
 CREATE OR REPLACE TABLE StructuredStreaming.Customer(
   CustomerID int,
   NameStyle boolean,
@@ -84,16 +94,18 @@ CREATE OR REPLACE TABLE StructuredStreaming.Customer(
   rowguid string,
   ModifiedDate timestamp
 )
-USING DELTA 
+USING DELTA LOCATION '{location}' 
+""".format(location=CUSTOMER_DELTA))
 
--- COMMAND ----------
+# COMMAND ----------
 
--- MAGIC %md ## Create Address Delta Table
+# MAGIC %md ## Create Address Delta Table
 
--- COMMAND ----------
+# COMMAND ----------
 
+spark.sql("""
 CREATE OR REPLACE TABLE StructuredStreaming.Address (
- AddressID LONG, 
+ AddressID INT, 
  AddressLine1 STRING,
  AddressLine2 STRING,
  City STRING,
@@ -103,14 +115,16 @@ CREATE OR REPLACE TABLE StructuredStreaming.Address (
  rowguid STRING,
  ModifiedDate TIMESTAMP
 )
-USING DELTA 
+USING DELTA LOCATION '{location}' 
+""".format(location=ADDRESS_DELTA))
 
--- COMMAND ----------
+# COMMAND ----------
 
--- MAGIC %md ## Create CustomerAddress Delta Table
+# MAGIC %md ## Create CustomerAddress Delta Table
 
--- COMMAND ----------
+# COMMAND ----------
 
+spark.sql("""
 CREATE OR REPLACE TABLE StructuredStreaming.CustomerAddress (
   CustomerID int,
   AddressID int,
@@ -118,14 +132,16 @@ CREATE OR REPLACE TABLE StructuredStreaming.CustomerAddress (
   rowguid string,
   ModifiedDate timestamp
 )
-USING DELTA 
+USING DELTA LOCATION '{location}' 
+""".format(location=CUSTOMER_ADDRESS_DELTA))
 
--- COMMAND ----------
+# COMMAND ----------
 
--- MAGIC %md ## Create Product Delta Table
+# MAGIC %md ## Create Product Delta Table
 
--- COMMAND ----------
+# COMMAND ----------
 
+spark.sql("""
 CREATE OR REPLACE TABLE StructuredStreaming.Product (
   ProductID int,
   Name string,
@@ -145,28 +161,32 @@ CREATE OR REPLACE TABLE StructuredStreaming.Product (
   rowguid string,
   ModifiedDate timestamp
 )
-USING DELTA 
+USING DELTA LOCATION '{location}' 
+""".format(location=PRODUCT_DELTA))
 
--- COMMAND ----------
+# COMMAND ----------
 
--- MAGIC %md ## Create ProductDescription Delta Table
+# MAGIC %md ## Create ProductDescription Delta Table
 
--- COMMAND ----------
+# COMMAND ----------
 
+spark.sql("""
 CREATE OR REPLACE TABLE StructuredStreaming.ProductDescription (
   ProductDescriptionID int,
   Description string,
   rowguid string,
   ModifiedDate timestamp
 )
-USING DELTA 
+USING DELTA LOCATION '{location}' 
+""".format(location=PRODUCT_DESCRIPTION_DELTA))
 
--- COMMAND ----------
+# COMMAND ----------
 
--- MAGIC %md ## Create ProductCategory Delta Table
+# MAGIC %md ## Create ProductCategory Delta Table
 
--- COMMAND ----------
+# COMMAND ----------
 
+spark.sql("""
 CREATE OR REPLACE TABLE StructuredStreaming.ProductCategory (
   ProductCategoryID int,
   ParentProductCategoryID int,
@@ -174,14 +194,16 @@ CREATE OR REPLACE TABLE StructuredStreaming.ProductCategory (
   rowguid string,
   ModifiedDate timestamp
 )
-USING DELTA 
+USING DELTA LOCATION '{location}' 
+""".format(location=PRODUCT_CATEGORGY_DELTA))
 
--- COMMAND ----------
+# COMMAND ----------
 
--- MAGIC %md ## Create ProductModel Delta Table
+# MAGIC %md ## Create ProductModel Delta Table
 
--- COMMAND ----------
+# COMMAND ----------
 
+spark.sql("""
 CREATE OR REPLACE TABLE StructuredStreaming.ProductModel (
   ProductModelID int,
   Name string,
@@ -189,14 +211,16 @@ CREATE OR REPLACE TABLE StructuredStreaming.ProductModel (
   rowguid string,
   ModifiedDate timestamp
 )
-USING DELTA 
+USING DELTA LOCATION '{location}' 
+""".format(location=PRODUCT_MODEL_DELTA)) 
 
--- COMMAND ----------
+# COMMAND ----------
 
--- MAGIC %md ## Create ProductModelProductDescription Delta Table
+# MAGIC %md ## Create ProductModelProductDescription Delta Table
 
--- COMMAND ----------
+# COMMAND ----------
 
+spark.sql("""
 CREATE OR REPLACE TABLE StructuredStreaming.ProductModelProductDescription (
   ProductModelID int,
   ProductDescriptionID int,
@@ -204,9 +228,10 @@ CREATE OR REPLACE TABLE StructuredStreaming.ProductModelProductDescription (
   rowguid string,
   ModifiedDate timestamp
 )
-USING DELTA 
+USING DELTA LOCATION '{location}' 
+""".format(location=PRODUCT_MODEL_PRODUCT_DESCRIPTION_DELTA))
 
--- COMMAND ----------
+# COMMAND ----------
 
--- MAGIC %scala
--- MAGIC dbutils.notebook.exit("Success")
+# MAGIC %scala
+# MAGIC dbutils.notebook.exit("Success")

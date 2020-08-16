@@ -1,0 +1,11 @@
+{
+  "name": "(StructuredStreaming) - [Cleanup] Drop Database and Tables",
+  "existing_cluster_id": "0812-211958-razed857",
+  "email_notifications": {},
+  "timeout_seconds": 0,
+  "notebook_task": {
+    "notebook_path": "/Structured Streaming/Cleanup/Clean Up",
+    "revision_timestamp": 0
+  },
+  "max_concurrent_runs": 1
+}

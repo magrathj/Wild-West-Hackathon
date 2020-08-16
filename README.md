@@ -22,3 +22,22 @@ View workspace
 ```
     databricks workspace list --profile hackathon
 ```
+
+
+## Architecture
+
+![Architecture](./images/overall_arch.PNG)
+
+
+![Setup](./images/Setup.PNG)
+
+
+![Stream](./images/Stream.PNG)
+
+
+![Stream](./images/Cleanup.PNG)
+
+
+## Application
+
+![Stream](./images/Streaming_Application.PNG)

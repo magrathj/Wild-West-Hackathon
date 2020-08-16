@@ -11,7 +11,7 @@
 
 # COMMAND ----------
 
-# MAGIC %run "./Hackathon Common (Python)"
+# MAGIC %run "./../Configuration/App Config"
 
 # COMMAND ----------
 
@@ -72,8 +72,9 @@ rawDF = spark.read.format("avro")\
   .option("inferschema", False)\
   .schema(schema)\
   .load(inputDirectory)
+  
 
-display(rawDF)
+display(rawDF.limit(1))
 
 # COMMAND ----------
 
@@ -105,6 +106,10 @@ display(rawDF
 
 # COMMAND ----------
 
+display(spark.read.format("delta").load(SALES_ORDER_DETAIL_DELTA))
+
+# COMMAND ----------
+
 # MAGIC %md ### Hint #2
 
 # COMMAND ----------
@@ -121,6 +126,70 @@ display(
   .select(col("Body").cast("string"), col('Schema'), col('Table'), col("EnqueuedTimeUtc"))
  # .withColumn("Body", col("Body").getItem("__$Table").getItem("member2"))
 )
+
+# COMMAND ----------
+
+customer_schema = spark.read.format("delta").load(CUSTOMER_DELTA).schema
+
+# COMMAND ----------
+
+df.withColumn("data_struct",from_json($"data",StructType(Array(StructField("month", StringType),StructField("day", StringType)))))
+
+# COMMAND ----------
+
+display(
+  rawDF
+  .withColumn("Schema", col("Properties").getItem("__$Schema").getItem("member2"))
+  .withColumn("Table", col("Properties").getItem("__$Table").getItem("member2"))
+  .select(col("Body").cast("string"), col("Schema"), col("Table"))
+  .filter(col('Table')=='Customer')
+  .withColumn('test', from_json('Body', customer_schema))
+  .limit(1)
+)
+
+# COMMAND ----------
+
+customer_address_schema = spark.read.format("delta").load(CUSTOMER_ADDRESS_DELTA).schema
+
+# COMMAND ----------
+
+display(
+  rawDF
+  .withColumn("Schema", col("Properties").getItem("__$Schema").getItem("member2"))
+  .withColumn("Table", col("Properties").getItem("__$Table").getItem("member2"))
+  .select(col("Body").cast("string"), col("Schema"), col("Table"))
+  .filter('Table=="CustomerAddress"')
+  .withColumn('Customer', 
+              when(col('Table')=='Customer', from_json('Body', customer_schema))
+              .otherwise(None)
+             )
+  .withColumn('CustomerAddress', 
+              when(col('Table')=='CustomerAddress', from_json('Body', customer_address_schema))
+              .otherwise(None)
+             )
+  .withColumn('CustomerID', col('CustomerAddress.CustomerID').alias('CustomerID'))
+  .limit(10)
+  
+)
+
+# COMMAND ----------
+
+ (rawDF
+  .withColumn("Schema", col("Properties").getItem("__$Schema").getItem("member2"))
+  .withColumn("Table", col("Properties").getItem("__$Table").getItem("member2"))
+  .select(col("Body").cast("string"), col("Schema"), col("Table"))
+  .filter('Table=="CustomerAddress"')
+  .withColumn('Customer', 
+              when(col('Table')=='Customer', from_json('Body', customer_schema))
+              .otherwise(None)
+             )
+  .withColumn('CustomerAddress', 
+              when(col('Table')=='CustomerAddress', from_json('Body', customer_address_schema))
+              .otherwise(None)
+             )
+  .select("CustomerAddress.*")
+  .printSchema()
+ )
 
 # COMMAND ----------
 
