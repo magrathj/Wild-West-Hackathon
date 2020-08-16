@@ -33,3 +33,6 @@ View workspace
 
 
 ![Stream](./images/Stream.PNG)
+
+
+![Stream](./images/Cleanup.PNG)
