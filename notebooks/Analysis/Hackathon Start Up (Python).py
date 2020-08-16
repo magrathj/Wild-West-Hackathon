@@ -106,6 +106,10 @@ display(rawDF
 
 # COMMAND ----------
 
+display(spark.read.format("delta").load(SALES_ORDER_DETAIL_DELTA))
+
+# COMMAND ----------
+
 # MAGIC %md ### Hint #2
 
 # COMMAND ----------
@@ -165,7 +169,27 @@ display(
              )
   .withColumn('CustomerID', col('CustomerAddress.CustomerID').alias('CustomerID'))
   .limit(10)
+  
 )
+
+# COMMAND ----------
+
+ (rawDF
+  .withColumn("Schema", col("Properties").getItem("__$Schema").getItem("member2"))
+  .withColumn("Table", col("Properties").getItem("__$Table").getItem("member2"))
+  .select(col("Body").cast("string"), col("Schema"), col("Table"))
+  .filter('Table=="CustomerAddress"')
+  .withColumn('Customer', 
+              when(col('Table')=='Customer', from_json('Body', customer_schema))
+              .otherwise(None)
+             )
+  .withColumn('CustomerAddress', 
+              when(col('Table')=='CustomerAddress', from_json('Body', customer_address_schema))
+              .otherwise(None)
+             )
+  .select("CustomerAddress.*")
+  .printSchema()
+ )
 
 # COMMAND ----------
 

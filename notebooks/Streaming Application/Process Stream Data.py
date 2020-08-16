@@ -39,6 +39,7 @@ sales_order_header_schema = SalesOrderHeaderDeltaTable.toDF().schema
 
 # COMMAND ----------
 
+# DBTITLE 1,Micro batch function to transform, filter and merge data into delta
 def process_incoming_data(batch_df, batchId):
   
   # Transform the incoming avro to a structured format
@@ -91,19 +92,78 @@ def process_incoming_data(batch_df, batchId):
   
   # cache the transformed dataframe 
   transformed_df.cache()
-  transformed_df.count()
+  print(transformed_df.count())
   
   # filter based on table name and write contents to the specific table 
-#   transformed_df.write.format(...).save(...)  // customer 1
-#   transformed_df.write.format(...).save(...)  // address 2
-#   transformed_df.write.format(...).save(...)  // customer_address 3
-#   transformed_df.write.format(...).save(...)  // product 4
-#   transformed_df.write.format(...).save(...)  // product_category 5  
-#   transformed_df.write.format(...).save(...)  // product_description 6  
-#   transformed_df.write.format(...).save(...)  // product_model 7  
-#   transformed_df.write.format(...).save(...)  // product_model_product_description 8
-#   transformed_df.write.format(...).save(...)  // sales_order_detail 9
-#   transformed_df.write.format(...).save(...)  // sales_order_header 10
+  CustomerDeltaTable.alias("table") \
+    .merge(transformed_df.filter('Table=="Customer"').select("Customer.*").alias("dataframe"),
+           "table.CustomerID = dataframe.CustomerID") \
+    .whenMatchedUpdateAll() \
+    .whenNotMatchedInsertAll() \
+    .execute()  # // customer 1
+  
+  AddressDeltaTable.alias("table") \
+    .merge(transformed_df.filter('Table=="Address"').select("Address.*").alias("dataframe"),
+           "table.AddressID = dataframe.AddressID") \
+    .whenMatchedUpdateAll() \
+    .whenNotMatchedInsertAll() \
+    .execute()  #// address 2
+  
+  CustomerAddressDeltaTable.alias("table") \
+    .merge(transformed_df.filter('Table=="CustomerAddress"').select("CustomerAddress.*").alias("dataframe"),
+           "table.CustomerID = dataframe.CustomerID and table.AddressID = dataframe.AddressID") \
+    .whenMatchedUpdateAll() \
+    .whenNotMatchedInsertAll() \
+    .execute()  #// customer_address 3
+  
+  ProductDeltaTable.alias("table") \
+     .merge(transformed_df.filter('Table=="Product"').select("Product.*").alias("dataframe"),
+            "table.ProductID = dataframe.ProductID") \
+    .whenMatchedUpdateAll() \
+    .whenNotMatchedInsertAll() \
+    .execute()  #// product 4
+  
+  ProductCategoryDeltaTable.alias("table") \
+    .merge(transformed_df.filter('Table=="ProductCategory"').select("ProductCategory.*").alias("dataframe"),
+           "table.ProductCategoryID = dataframe.ProductCategoryID and table.ParentProductCategoryID = dataframe.ParentProductCategoryID") \
+    .whenMatchedUpdateAll() \
+    .whenNotMatchedInsertAll() \
+    .execute()  #// product_category 5  
+  
+  ProductDescriptionDeltaTable.alias("table") \
+    .merge(transformed_df.filter('Table=="ProductDescription"').select("ProductDescription.*").alias("dataframe"),
+           "table.ProductDescriptionID = dataframe.ProductDescriptionID") \
+    .whenMatchedUpdateAll() \
+    .whenNotMatchedInsertAll() \
+    .execute()  #// product_description 6  
+  
+  ProductModelDeltaTable.alias("table") \
+    .merge(transformed_df.filter('Table=="ProductModel"').select("ProductModel.*").alias("dataframe"),
+           "table.ProductModelID = dataframe.ProductModelID") \
+    .whenMatchedUpdateAll() \
+    .whenNotMatchedInsertAll() \
+    .execute()  #// product_model 7  
+  
+  ProductModelProductDescriptionDeltaTable.alias("table") \
+    .merge(transformed_df.filter('Table=="ProductModelProductDescription"').select("ProductModelProductDescription.*").alias("dataframe"),
+           "table.ProductModelID = dataframe.ProductModelID and table.ProductDescriptionID = dataframe.ProductDescriptionID ") \
+    .whenMatchedUpdateAll() \
+    .whenNotMatchedInsertAll() \
+    .execute()  #// product_model_product_description 8
+  
+  SalesOrderDetailDeltaTable.alias("table") \
+    .merge(transformed_df.filter('Table=="SalesOrderDetail"').select("SalesOrderDetail.*").alias("dataframe"),
+           "table.SalesOrderDetailID = dataframe.SalesOrderDetailID") \
+    .whenMatchedUpdateAll() \
+    .whenNotMatchedInsertAll() \
+    .execute()  #// sales_order_detail 9
+  
+  SalesOrderHeaderDeltaTable.alias("table") \
+    .merge(transformed_df.filter('Table=="SalesOrderHeader"').select("SalesOrderHeader.*").alias("dataframe"),
+           "table.SalesOrderID = dataframe.SalesOrderID") \
+    .whenMatchedUpdateAll() \
+    .whenNotMatchedInsertAll() \
+    .execute()  #// sales_order_header 10
   
   # clear cache
   transformed_df.unpersist()

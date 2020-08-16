@@ -9,6 +9,3 @@ avro_schema = StructType([
     StructField("member3", BinaryType(), True)
   ])), True)
 ])
-
-# COMMAND ----------
-

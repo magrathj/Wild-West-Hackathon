@@ -15,8 +15,19 @@
 
 def import_parquet_files(tables_info):
   for table_info in tables_info: 
-    print(f" imported parquet file at: {table_info['parquet_path']} into: { table_info['table_path']}")
-    spark.read.format("parquet").option("inferSchema", True).load(table_info['parquet_path']).write.format("delta").option("mergeSchema", False).mode("append").save(table_info['table_path'])
+    try:
+      print(f" imported parquet file at: {table_info['parquet_path']} into: { table_info['table_path']}")
+      (spark.read.format("parquet")
+        .option("inferSchema", True)
+        .load(table_info['parquet_path'])
+        .write.format("delta")
+        .option("mergeSchema", False)
+        .mode("append")
+        .save(table_info['table_path'])
+      )
+    except Exception as error:
+      print(f" parquet file at: {table_info['parquet_path']} did not get import")
+      print(f"error: {error}")    
 
 # COMMAND ----------
 
@@ -77,38 +88,6 @@ parquet_files_to_insert = [
 # COMMAND ----------
 
 import_parquet_files(parquet_files_to_insert) 
-
-# COMMAND ----------
-
-from pyspark.sql.types import *
-from pyspark.sql.functions import *
-
-# COMMAND ----------
-
-schema = StructType([
-  StructField("SalesOrderID",IntegerType(),True),
-  StructField("SalesOrderDetailID",IntegerType(),True),
-  StructField("OrderQty",IntegerType(),True),
-  StructField("ProductID",IntegerType(),True),
-  StructField("UnitPrice",DoubleType(),True),
-  StructField("UnitPriceDiscount",DoubleType(),True),
-  StructField("LineTotal",DoubleType(),True),
-  StructField("rowguid",StringType(),True),
-  StructField("ModifiedDate",TimestampType(),True)
-])
-
-# COMMAND ----------
-
-spark.read.format("parquet").load(SALES_ORDER_DETAIL_PARQUET).show()
-
-# COMMAND ----------
-
-spark.read.format("parquet").load(SALES_ORDER_DETAIL_PARQUET).withColumn('UnitPrice', col('UnitPrice').cast(DoubleType())).show()
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC select * from structuredstreaming.address
 
 # COMMAND ----------
 

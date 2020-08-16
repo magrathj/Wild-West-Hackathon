@@ -7,34 +7,15 @@ from delta.tables import *
 
 # COMMAND ----------
 
-# MAGIC %run "./../Configuration/App Config"
-
-# COMMAND ----------
-
 # MAGIC %run "./../Setup/Schemas"
 
 # COMMAND ----------
 
+# MAGIC %run "./Process Stream Data"
+
+# COMMAND ----------
+
 # DBTITLE 1,Read in Stream
-# stream_df = (spark.readStream.format("avro")
-#             .option("inferschema", False)
-#             .schema(schema)
-#             .load(inputDirectory)
-#            )
-
-# COMMAND ----------
-
-# query = stream_df \
-#     .writeStream \
-#     .outputMode("append") \
-#     .queryName("structuredstreaming") \
-#     .format("memory") \
-#     .start()
-
-# query.awaitTermination()
-
-# COMMAND ----------
-
 stream_df = spark.readStream.format("avro") \
               .option("inferschema", False) \
               .schema(avro_schema) \
@@ -43,8 +24,13 @@ stream_df = spark.readStream.format("avro") \
 
 # COMMAND ----------
 
+# DBTITLE 1,Merge to specific tables using micro batch 
 stream_df.writeStream \
   .format("delta") \
   .foreachBatch(process_incoming_data) \
   .outputMode("update") \
+  .option("checkpointLocation", checkpointLocation) \
   .start() 
+
+# COMMAND ----------
+
