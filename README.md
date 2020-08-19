@@ -28,7 +28,6 @@ View workspace
 
 ![Architecture](./images/overall_arch.PNG)
 
-
 ![Setup](./images/Setup.PNG)
 
 
@@ -41,3 +40,7 @@ View workspace
 ## Application
 
 ![Stream](./images/Streaming_Application.PNG)
+
+## Video
+Architecture - https://youtu.be/6ouUu8God90   
+Application - https://youtu.be/EoeCTR36eKI
