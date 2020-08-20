@@ -7,7 +7,7 @@ trigger:
 - master
 
 variables:
-  databricks.notebook.path: /'Structured Streaming'/
+  databricks.notebook.path: /Structured Streaming/
   
 pool:
   vmImage: 'ubuntu-latest'
