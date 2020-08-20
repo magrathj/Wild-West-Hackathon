@@ -6,6 +6,9 @@
 trigger:
 - master
 
+variables:
+  databricks.notebook.path: /'Structured Streaming'/
+  
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -39,3 +42,20 @@ steps:
       # For password auth there are three lines expected
       # hostname, username, password
       echo "$conf" | databricks configure --token
+
+- task: Bash@3
+  displayName: 'Create workspace folder'
+  inputs:
+    targetType: 'inline'
+    script: databricks workspace mkdirs "$(databricks.notebook.path)"
+
+- task: Bash@3
+  displayName: 'Import notebooks'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # import notebooks
+      databricks workspace import_dir -o notebooks "$(databricks.notebook.path)"
+
+
+    
