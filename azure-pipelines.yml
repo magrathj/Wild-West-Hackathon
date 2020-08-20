@@ -16,7 +16,9 @@ variables:
   databricks.cluster.autotermination_minutes: 30
   databricks.cluster.workers.min: 2
   databricks.cluster.workers.max: 4
-  
+  databricks.job.createtables.name: '(StructuredStreaming) - [Setup] Build Delta Tables'
+  databricks.job.createtables.id: 
+
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -133,4 +135,13 @@ steps:
       else
         exit 1
       fi
+    
+- task: Bash@3
+  displayName: 'Get Create Tables Job'
+  inputs:
+    targetType: 'inline'
+    script: |
+      job_id=$(databricks jobs list | grep "$(databricks.job.createtables.name)" | awk '{print $1}')
+            
+      echo "##vso[task.setvariable variable=databricks.job.createtables.id;]$job_id"
     
