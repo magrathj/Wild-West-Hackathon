@@ -166,3 +166,58 @@ steps:
       else
         exit 1
       fi
+
+- task: Bash@3
+  displayName: 'Run Auto-Optimize Job'
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "Running job with ID $(databricks.job.autooptimize.id) "
+      run_id1=$(databricks jobs run-now --job-id $(databricks.job.autooptimize.id) | jq ".run_id")
+      echo "  Run ID: $run_id1"
+      run_state=$(databricks runs get --run-id $run_id1 | jq -r ".state.life_cycle_state")
+      echo "Run State (ID $run_id1): $run_state"
+      while [ $run_state == "RUNNING" -o $run_state == "PENDING" ]
+      do
+        sleep 30
+        run_state=$(databricks runs get --run-id $run_id1 | jq -r ".state.life_cycle_state")
+        echo "Run State (ID $run_id1): $run_state"
+      done
+      result_state1=$(databricks runs get --run-id $run_id1 | jq -r ".state.result_state")
+      state_message1=$(databricks runs get --run-id $run_id1 | jq -r ".state.state_message")
+      echo "Result State (ID $run_id1): $result_state1, Message: $state_message1"
+      
+      if [ $result_state1 == "SUCCESS" ]
+      then
+        exit 0
+      else
+        exit 1
+      fi
+
+
+- task: Bash@3
+  displayName: 'Run Import Job'
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "Running job with ID $(databricks.job.import.id) "
+      run_id1=$(databricks jobs run-now --job-id $(databricks.job.import.id) | jq ".run_id")
+      echo "  Run ID: $run_id1"
+      run_state=$(databricks runs get --run-id $run_id1 | jq -r ".state.life_cycle_state")
+      echo "Run State (ID $run_id1): $run_state"
+      while [ $run_state == "RUNNING" -o $run_state == "PENDING" ]
+      do
+        sleep 30
+        run_state=$(databricks runs get --run-id $run_id1 | jq -r ".state.life_cycle_state")
+        echo "Run State (ID $run_id1): $run_state"
+      done
+      result_state1=$(databricks runs get --run-id $run_id1 | jq -r ".state.result_state")
+      state_message1=$(databricks runs get --run-id $run_id1 | jq -r ".state.state_message")
+      echo "Result State (ID $run_id1): $result_state1, Message: $state_message1"
+      
+      if [ $result_state1 == "SUCCESS" ]
+      then
+        exit 0
+      else
+        exit 1
+      fi
