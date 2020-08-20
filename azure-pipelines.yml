@@ -10,10 +10,32 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: UsePythonVersion@0
+  displayName: 'Set python 3.7'
+  inputs:
+    versionSpec: '3.7'
+    addToPath: true
+    architecture: 'x64'
+- task: Bash@3
+  displayName: 'Install Databricks-Cli'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # install databricks-cli
+      pip install -U databricks-cli
+    
+- task: Bash@3
+  displayName: 'Configure Databricks CLI'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # We need to write the pipe the conf into databricks configure --token since
+      # that command only takes inputs from stdin. 
+      conf=`cat << EOM
+      $(databricks.host)
+      $(databricks.token)
+      EOM`
+      
+      # For password auth there are three lines expected
+      # hostname, username, password
+      echo "$conf" | databricks configure --token
